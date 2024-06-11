@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { VStack, Image, Text, Center, Heading, ScrollView, Box, StatusBar } from 'native-base';
 
 import LogoSvg from '@assets/logo.svg';
@@ -6,6 +7,13 @@ import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 
 export function SignUp(){
+
+  const navigation = useNavigation();
+
+  function handleGoBack(){
+    navigation.goBack();
+  }
+
   return(
     <ScrollView contentContainerStyle={{ flexGrow: 1}} showsVerticalScrollIndicator={false}>
       <StatusBar 
@@ -13,17 +21,18 @@ export function SignUp(){
         backgroundColor="#202024"
         translucent
       />
-      <VStack flex={1} bg="gray.500" pb={10}>
+      <VStack flex={1} pb={10}>
         <Box>
           <Image
             source={BackgroundImg}
+            defaultSource={BackgroundImg}
             alt='Pessoas Treinando'
             position='absolute'
             width='full'
           />
         </Box>
 
-        <Center my={24} px={10} >
+        <Center my={20} px={10} >
           <LogoSvg />
           <Text color='gray.100' fontSize='sm'>
             Treine sua mente e o seu corpo
@@ -54,7 +63,11 @@ export function SignUp(){
         </Center>
 
         <Center mt={16} px={10} >
-          <Button title='Voltar para o login' variant='outline'/>
+          <Button 
+            title='Voltar para o login' 
+            variant='outline'
+            onPress={handleGoBack}
+          />
         </Center>
 
       </VStack>
