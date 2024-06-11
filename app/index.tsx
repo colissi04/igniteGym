@@ -1,15 +1,24 @@
-import { Text, View } from "react-native";
+import React from "react";
+import { NativeBaseProvider} from "native-base";
+import { StatusBar } from "react-native";
+import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
+
+import { THEME } from "src/theme";
+
+import { Loading } from "@components/Loading";
+import { SignUp } from "@screens/SignUp";
 
 export default function Index() {
+  const [ fontsLoaded ] = useFonts({ Roboto_400Regular, Roboto_700Bold });
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
+    <NativeBaseProvider theme={THEME}>
+      <StatusBar 
+        barStyle="light-content"
+        backgroundColor="#202024"
+        translucent
+      />
+      { fontsLoaded ? <SignUp /> : <Loading /> }
+    </NativeBaseProvider>
   );
 }
