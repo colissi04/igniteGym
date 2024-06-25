@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { VStack, Image, Text, Center, Heading, ScrollView, Box, StatusBar } from 'native-base';
+import { VStack, Image, Text, Center, Heading, ScrollView, Box, StatusBar, useToast } from 'native-base';
 import { useForm, Controller } from 'react-hook-form';
 
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
@@ -10,6 +11,7 @@ import LogoSvg from '@assets/logo.svg';
 import BackgroundImg from '@assets/background.png';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
+import { AppError } from '@utils/AppError';
 
 type FormData = {
   email: string;
@@ -17,14 +19,31 @@ type FormData = {
 }
 
 export function SignIn(){
+  const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useAuth();
-
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
+  const toast = useToast();
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
   
   async function handleSignIn({email, password}: FormData){
-    await signIn(email, password);
+    try {
+      setIsLoading(true);
+      await signIn(email, password);
+    } catch(error){
+      const isAppError = error instanceof AppError;
+
+      const title = isAppError ? error.message : 'Não foi possível entrar, tente novamente mais tarde.'
+      toast.show({
+        title,
+        placement: 'top',
+        bgColor: 'red.500'
+      })
+
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false); //remover quando direcionar o user para a rota
+    }
   }
 
   function handleNewAccount(){
@@ -90,7 +109,7 @@ export function SignIn(){
             )}
           />
 
-          <Button title='Acessar' onPress={handleSubmit(handleSignIn)}/>
+          <Button title='Acessar' onPress={handleSubmit(handleSignIn)} isLoading={isLoading}/>
         </Center>
 
         <Center mt={16} px={10} >
