@@ -4,11 +4,17 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import { UserPhoto } from "./UserPhoto";
 
+import defaultUserPhotoImg from '@assets/userPhotoDefault.png';
+
+import { useAuth } from "@hooks/useAuth";
+
 export function HomeHeader(){
+  const { user, signOut } = useAuth();
+
   return(
     <HStack bg='gray.600' pt={5} pb={5} px={8} alignItems='center'>
       <UserPhoto
-        source={{ uri: 'https://github.com/colissi04.png' }} 
+        source={user.avatar? {uri: user.avatar} : defaultUserPhotoImg} 
         alt='Imagem de Perfil do Usuário'
         size={16}
         mr={4}
@@ -16,10 +22,10 @@ export function HomeHeader(){
 
       <VStack flex={1}>
         <Text color='gray.100' fontSize='md'>Olá</Text>
-        <Heading color='gray.100' fontSize='md' fontFamily='heading'>Rodrigo</Heading>
+        <Heading color='gray.100' fontSize='md' fontFamily='heading'>{user.name}</Heading>
       </VStack>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={signOut}>
         <Icon 
           as={MaterialIcons}
           name='logout'
